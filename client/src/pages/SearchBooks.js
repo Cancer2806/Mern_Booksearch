@@ -16,7 +16,7 @@ const SearchBooks = () => {
   const [searchInput, setSearchInput] = useState('');
 
   // Use mutation to save books
-  const [saveBook, { error }] = useMutation(SAVE_BOOK);
+  const [saveBook, { error, data }] = useMutation(SAVE_BOOK);
 
   // create state to hold saved bookId values
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
@@ -54,8 +54,8 @@ const SearchBooks = () => {
 
       setSearchedBooks(bookData);
       setSearchInput('');
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -63,22 +63,32 @@ const SearchBooks = () => {
   const handleSaveBook = async (bookId) => {
     // find the book in `searchedBooks` state by the matching id
     const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
-    
+    // console.log(bookToSave);
 
     // get token
     const token = Auth.loggedIn() ? Auth.getToken() : null;
+
+    // console.log(token);
+    
 
     if (!token) {
       return false;
     }
 
     try {
+
       const { data } = await saveBook({
-        variables: { token, bookToSave },
+        variables: {
+          bookId: bookToSave.bookId,
+          authors: bookToSave.authors,
+          description: bookToSave.description,
+          title: bookToSave.title,
+          image: bookToSave.image,
+          link: bookToSave.link
+        },
       });
 
       // const response = await saveBook(bookToSave, token);
-
       // if (!response.ok) {
       //   throw new Error('something went wrong!');
       // }
