@@ -1,16 +1,23 @@
 const User = require('../models/User');
 const { signToken } = require('../utils/Auth');
 
+// function to check if the user is logged in
+function checkLoggedIn(context) {
+  const user = context.user;
+  if (!user) {
+    throw new Error(`User has not logged in`);
+  };
+  return user;
+};
+
+
+// Define resolvers for GraphQl
 const resolvers = {
   Query: {
-    getUser: async (parent, args, context) => {
-      if (!context.user) {
-        throw new Error(`User has not logged in`);
-      }
-      const user = context.user;
-      const foundUser = await User.findOne({
-        _id: user._id,
-      });
+    me: async (parent, args, context) => {
+      const user = checkLoggedIn(context);
+
+      const foundUser = await User.findOne({_id: context.user._id,});
       if (!foundUser) {
         throw new Error(`Cannot find User`);
       }
@@ -19,15 +26,17 @@ const resolvers = {
   },
 
   Mutation: {
-    login: async (parent, { email, password }) => {
-      const user = await User.findOne({ email: email, });
+    login: async (parent, { email, password }, context) => {
+      const user = await User.findOne({ email: email });
       if (!user) {
-        throw new Error(`Cannot find User`);
+        throw new Error(`Login failure`);
       }
+
       const correctPw = await user.isCorrectPassword(password);
       if (!correctPw) {
-        throw new Error(`Incorrect Password!`);
+        throw new Error(`Login failure`);
       }
+      // Use same failure message to reduce chances for bad player
       const token = signToken(user);
 
       return { token, user };
@@ -38,25 +47,43 @@ const resolvers = {
       if (!user) {
         throw new Error(`Cannot create user`);
       }
-      const token = signToken(user);
 
+      const token = signToken(user);
       return { token, user };
     },
 
     saveBook: async (parent, { bookId, authors, description, title, image, link }) => {
-      return Book.create({
-        bookId: bookId,
-        authors: [authors],
-        description: description,
-        title: title,
-        image: image,
-        ling: link
-      });
+      const user = checkLoggedIn(context);
+
+      try {
+        const updatedUser = await User.findOneAndUpdate(
+          { _id: user._id },
+          { $addToSet: { savedBooks: { bookId, authors, description, title, image, link } } },
+          { new: true }
+        );
+        if (!updatedUser) {
+          throw new Error(`Could not find user with this id`);
+        }
+        return updatedUser;
+      } catch { error } {
+        console.log(error);
+        throw error;
+      };
     },
 
-    removeBook: async (parent, { bookId }) => {
-      return Book.findOneAndDelete({ bookId: bookId }
+    removeBook: async (parent, { bookId }, context) => {
+      const user = checkLoggedIn(context);
+
+      const updatedUser = await User.findOneAndUpdate(
+        { _id: user._id },
+        { $pull: { savedBooks: { bookId: bookId } } },
+        { new: true }
       );
+      if (!updatedUser) {
+        throw new Error(`Could not find user with this id`);
+      };
+
+      return updatedUser;
     },
   },
 };
