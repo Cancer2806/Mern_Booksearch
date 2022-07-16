@@ -5,7 +5,13 @@ query me {
   me {
     _id
     username
-    email
+    password
+    bookCount
+    savedBooks {
+      bookId
+      title
+      description
+    }
   }
 }
 `;
