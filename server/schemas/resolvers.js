@@ -17,7 +17,7 @@ const resolvers = {
     me: async (parent, args, context) => {
       const user = checkLoggedIn(context);
 
-      const foundUser = await User.findOne({_id: context.user._id,});
+      const foundUser = await User.findOne({_id: user._id,});
       if (!foundUser) {
         throw new Error(`Cannot find User`);
       }
@@ -52,7 +52,7 @@ const resolvers = {
       return { token, user };
     },
 
-    saveBook: async (parent, { bookId, authors, description, title, image, link }) => {
+    saveBook: async (parent, { bookId, authors, description, title, image, link }, context) => {
       const user = checkLoggedIn(context);
 
       try {
