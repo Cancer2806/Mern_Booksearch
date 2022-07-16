@@ -52,7 +52,7 @@ const LoginForm = (props) => {
     }
 
     setUserFormData({
-      username: '',
+      // username: '',
       email: '',
       password: '',
     });
