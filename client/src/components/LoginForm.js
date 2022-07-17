@@ -19,14 +19,15 @@ const LoginForm = (props) => {
     const { name, value } = event.target;
     setUserFormData({
       ...userFormData,
-      [name]: value
+      [name]: value,
     });
   };
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
+    console.log(userFormData);
 
-    // check if form has everything (as per react-bootstrap docs)
+    // check if form has everything
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
@@ -35,6 +36,10 @@ const LoginForm = (props) => {
 
     try {
       const { data } = await login({
+        // variables: {
+        //   email: userFormData.email,
+        //   password: userFormData.password
+        // },
         variables: { ...userFormData },
       });
       // const response = await loginUser(userFormData);

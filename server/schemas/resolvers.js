@@ -27,7 +27,7 @@ const resolvers = {
   },
 
   Mutation: {
-    login: async (parent, { email, password }, context) => {
+    login: async (parent, { email, password }) => {
       const user = await User.findOne({ email: email });
       if (!user) {
         throw new Error(`Login failure`);
@@ -45,11 +45,9 @@ const resolvers = {
 
     addUser: async (parent, { username, email, password }) => {
       const user = await User.create({ username, email, password });
-      if (!user) {
-        throw new Error(`Cannot create user`);
-      }
-
+      
       const token = signToken(user);
+      
       return { token, user };
     },
 
@@ -63,7 +61,7 @@ const resolvers = {
         throw new Error(`User has not logged in`);
       };
       
-      
+
       try {
         const updatedUser = await User.findOneAndUpdate(
           { _id: user._id },
