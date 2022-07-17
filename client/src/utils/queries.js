@@ -5,7 +5,7 @@ query me {
   me {
     _id
     username
-    password
+    email
     bookCount
     savedBooks {
       bookId
