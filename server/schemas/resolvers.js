@@ -1,3 +1,4 @@
+const { AuthenticationError } = require('apollo-server-express');
 const User = require('../models/User');
 const { signToken } = require('../utils/Auth');
 
@@ -22,7 +23,7 @@ const resolvers = {
     me: async (parent, args, context) => {
       const user = checkLoggedIn(context);
 
-      const foundUser = await User.findOne({_id: user._id,});
+      const foundUser = await User.findOne({_id: context.user._id,});
       if (!foundUser) {
         throw new Error(`Cannot find User`);
       }
@@ -60,7 +61,7 @@ const resolvers = {
       
       try {
         const updatedUser = await User.findOneAndUpdate(
-          { _id: user._id },
+          { _id: context.user._id },
           { $addToSet: { savedBooks: { bookId, authors, description, title, image, link } } },
           { new: true }
         );
@@ -79,7 +80,7 @@ const resolvers = {
       const user = context.user;
       
       const updatedUser = await User.findOneAndUpdate(
-        { _id: user._id },
+        { _id: context.user._id },
         { $pull: { savedBooks: { bookId: bookId } } },
         { new: true }
       );
