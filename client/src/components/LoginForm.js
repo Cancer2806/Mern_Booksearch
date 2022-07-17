@@ -17,6 +17,7 @@ const LoginForm = (props) => {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
+    console.log(userFormData);
     setUserFormData({
       ...userFormData,
       [name]: value,

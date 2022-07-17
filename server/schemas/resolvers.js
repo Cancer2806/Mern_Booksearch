@@ -3,10 +3,14 @@ const { signToken } = require('../utils/Auth');
 
 // function to check if the user is logged in
 function checkLoggedIn(context) {
+  // console.log('context  ', context);
+  // console.log('context.user', context.user);
   const user = context.user;
   
   if (!user) {
-    throw new Error(`User has not logged in`);
+    console.log('context  ', context);
+    console.log('context.user', context.user);
+    throw new Error(`CK1:  User has not logged in`);
   };
   return user;
 };
@@ -52,16 +56,8 @@ const resolvers = {
     },
 
     saveBook: async (parent, { bookId, authors, description, title, image, link }, context) => {
-      // const user = checkLoggedIn(context);
-      const user = context.user;
+      const user = checkLoggedIn(context);
       
-      console.log(context);
-
-      if (!user) {
-        throw new Error(`User has not logged in`);
-      };
-      
-
       try {
         const updatedUser = await User.findOneAndUpdate(
           { _id: user._id },
