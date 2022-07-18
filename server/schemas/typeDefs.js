@@ -15,7 +15,7 @@ type User {
     username: String!
     email: String!
     bookCount: Int
-    password: String!
+    # password: String!
     savedBooks: [Book]
   }
 

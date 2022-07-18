@@ -10,6 +10,9 @@ query me {
     savedBooks {
       bookId
       title
+      authors
+      image
+      link
       description
     }
   }

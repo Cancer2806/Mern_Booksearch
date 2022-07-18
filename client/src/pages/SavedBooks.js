@@ -14,11 +14,12 @@ import { removeBookId } from '../utils/localStorage';
 const SavedBooks = () => {
   // const [userData, setUserData] = useState({});
   
-  const { loading, error, data } = useQuery(GET_ME);
-  const [removeBook, { bookData }] = useMutation(REMOVE_BOOK);
+  const { loading, error, data } = useQuery(GET_ME,
+    {fetchPolicy: 'no-cache'});
+  const [removeBook, { error: mutationError }] = useMutation(REMOVE_BOOK,
+    {refetchQueries:[{query: GET_ME}]});
   let userData = data?.me || {};
-  // console.log('User  ', userData);
-  
+    
   // use this to display Loading message if needed
   const userDataLength = Object.keys(userData).length;
 
@@ -56,7 +57,7 @@ const SavedBooks = () => {
     }
 
     try {
-      const { bookData } = await removeBook({
+      const { data } = await removeBook({
         variables: {
           bookId: bookId
         },
@@ -78,7 +79,7 @@ const SavedBooks = () => {
   };
 
   // if data isn't here yet, say so
-  if (!userDataLength) {
+  if (loading) {
     return <h2>LOADING...</h2>;
   }
 
