@@ -6,7 +6,7 @@ import { Form, Button, Alert } from 'react-bootstrap';
 // import mutations
 import { useMutation } from '@apollo/client';
 import { ADD_USER } from '../utils/mutations';
-import Auth from '../utils/auth';
+import AuthService from '../utils/auth';
 
 const SignupForm = () => {
   // set initial form state
@@ -33,7 +33,7 @@ const SignupForm = () => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    console.log(userFormData);
+    // console.log(userFormData);
     
     // check if form has everything (as per react-bootstrap docs)
     const form = event.currentTarget;
@@ -52,7 +52,7 @@ const SignupForm = () => {
       // }
       // const { token, user } = await response.json();
 
-      Auth.login(data.addUser.token);
+      AuthService.login(data.addUser.token);
     } catch (err) {
       console.error(err);
       setShowAlert(true);

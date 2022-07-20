@@ -1,6 +1,6 @@
-const { AuthenticationError } = require('apollo-server-express');
+// const { AuthenticationError } = require('apollo-server-express');
 const User = require('../models/User');
-const { signToken } = require('../utils/Auth');
+const { signToken } = require('../utils/auth');
 
 // function to check if the user is logged in
 function checkLoggedIn(context) {
@@ -9,8 +9,8 @@ function checkLoggedIn(context) {
   const user = context.user;
   
   if (!user) {
-    console.log('context  ', context);
-    console.log('context.user', context.user);
+    // console.log('context  ', context);
+    // console.log('context.user', context.user);
     throw new Error(`CK1:  User has not logged in`);
   };
   return user;
@@ -23,7 +23,8 @@ const resolvers = {
     me: async (parent, args, context) => {
       const user = checkLoggedIn(context);
 
-      const foundUser = await User.findOne({_id: context.user._id,});
+      // const foundUser = await User.findOne({_id: context.user._id,});
+      const foundUser = await User.findOne({ _id: user._id, });
       if (!foundUser) {
         throw new Error(`Cannot find User`);
       }
@@ -56,13 +57,13 @@ const resolvers = {
       return { token, user };
     },
 
-    saveBook: async (parent, { bookId, authors, description, title, image, link }, context) => {
+    saveBook: async (parent, { bookId, authors, title, description, image, link }, context) => {
       const user = checkLoggedIn(context);
-      
+      // {_id: user._id},
       try {
         const updatedUser = await User.findOneAndUpdate(
           { _id: context.user._id },
-          { $addToSet: { savedBooks: { bookId, authors, description, title, image, link } } },
+          { $addToSet: { savedBooks: { bookId, authors, title, description, image, link } } },
           { new: true }
         );
         if (!updatedUser) {
@@ -76,9 +77,9 @@ const resolvers = {
     },
 
     removeBook: async (parent, { bookId }, context) => {
-      // const user = checkLoggedIn(context);
-      const user = context.user;
-      
+      const user = checkLoggedIn(context);
+      // const user = context.user;
+// {_id: user._id},      
       const updatedUser = await User.findOneAndUpdate(
         { _id: context.user._id },
         { $pull: { savedBooks: { bookId: bookId } } },
@@ -87,7 +88,6 @@ const resolvers = {
       if (!updatedUser) {
         throw new Error(`Could not find user with this id`);
       };
-
       return updatedUser;
     },
   },

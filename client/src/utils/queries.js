@@ -9,11 +9,11 @@ query me {
     bookCount
     savedBooks {
       bookId
-      title
       authors
+      title
+      description
       image
       link
-      description
     }
   }
 }

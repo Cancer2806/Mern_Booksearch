@@ -3,7 +3,7 @@ import { Jumbotron, Container, Col, Form, Button, Card, CardColumns } from 'reac
 
 import { useMutation } from '@apollo/client';
 import { SAVE_BOOK } from '../utils/mutations';
-import Auth from '../utils/auth';
+import AuthService from '../utils/auth';
 // import {  saveBook, searchGoogleBooks } from '../utils/API';
 import { searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
@@ -50,6 +50,7 @@ const SearchBooks = () => {
         title: book.volumeInfo.title,
         description: book.volumeInfo.description,
         image: book.volumeInfo.imageLinks?.thumbnail || '',
+        link: book.selfLink,
       }));
 
       setSearchedBooks(bookData);
@@ -66,7 +67,7 @@ const SearchBooks = () => {
     // console.log(bookToSave);
 
     // get token
-    const token = Auth.loggedIn() ? Auth.getToken() : null;
+    const token = AuthService.loggedIn() ? AuthService.getToken() : null;
 
     // console.log(token);
       if (!token) {
@@ -79,8 +80,8 @@ const SearchBooks = () => {
         variables: {
           bookId: bookToSave.bookId,
           authors: bookToSave.authors,
-          description: bookToSave.description,
           title: bookToSave.title,
+          description: bookToSave.description,
           image: bookToSave.image,
           link: bookToSave.link
         },
@@ -142,7 +143,7 @@ const SearchBooks = () => {
                   <Card.Title>{book.title}</Card.Title>
                   <p className='small'>Authors: {book.authors}</p>
                   <Card.Text>{book.description}</Card.Text>
-                  {Auth.loggedIn() && (
+                  {AuthService.loggedIn() && (
                     <Button
                       disabled={savedBookIds?.some((savedBookId) => savedBookId === book.bookId)}
                       className='btn-block btn-info'

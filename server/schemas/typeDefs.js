@@ -5,8 +5,8 @@ type Book {
   _id: ID!
   bookId: ID!
   authors: [String]
-  description: String
   title: String!
+  description: String
   image: String
   link: String
 }
@@ -44,8 +44,8 @@ type Mutation {
   saveBook(
     bookId: ID!, 
     authors: [String],
-    description: String,
     title: String!,
+    description: String,
     image: String,
     link: String
     ): User

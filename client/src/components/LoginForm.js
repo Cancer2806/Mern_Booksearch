@@ -6,7 +6,7 @@ import { Form, Button, Alert } from 'react-bootstrap';
 // Import and use mutations
 import { useMutation } from '@apollo/client';
 import { LOGIN_USER } from '../utils/mutations';
-import Auth from '../utils/auth';
+import AuthService from '../utils/auth';
 
 const LoginForm = (props) => {
   const [userFormData, setUserFormData] = useState({ email: '', password: '' });
@@ -17,7 +17,7 @@ const LoginForm = (props) => {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    console.log(userFormData);
+    // console.log(userFormData);
     setUserFormData({
       ...userFormData,
       [name]: value,
@@ -26,7 +26,7 @@ const LoginForm = (props) => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    console.log(userFormData);
+    // console.log(userFormData);
 
     // check if form has everything
     const form = event.currentTarget;
@@ -51,7 +51,7 @@ const LoginForm = (props) => {
 
       // const { token, user } = await response.json();
       // console.log(user);
-      Auth.login(data.login.token);
+      AuthService.login(data.login.token);
     } catch (err) {
       console.error(err);
       setShowAlert(true);
