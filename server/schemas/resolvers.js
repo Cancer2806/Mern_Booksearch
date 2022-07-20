@@ -1,5 +1,6 @@
 // const { AuthenticationError } = require('apollo-server-express');
 const User = require('../models/User');
+// const { signToken } = require('../utils/auth');
 const { signToken } = require('../utils/auth');
 
 // function to check if the user is logged in
