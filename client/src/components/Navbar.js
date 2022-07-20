@@ -1,6 +1,9 @@
+// Component for displaying and updating Navbar, depending on User's status
+// import required dependencies
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar, Nav, Container, Modal, Tab } from 'react-bootstrap';
+
 import SignUpForm from './SignupForm';
 import LoginForm from './LoginForm';
 

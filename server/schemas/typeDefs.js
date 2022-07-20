@@ -1,4 +1,8 @@
+// import apollo and define typeDefs for GraphQl
 const { gql } = require('apollo-server-express');
+
+// types relate directly to the database schema models
+// queries and mutations relate directly to the resolvers
 
 const typeDefs = gql`
 type Book {

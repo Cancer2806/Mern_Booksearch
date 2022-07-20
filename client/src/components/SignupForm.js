@@ -1,12 +1,12 @@
+// Component for displaying User signup form
+// import required dependencies
 import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
-
-// import { createUser } from '../utils/API';
 
 // import mutations
 import { useMutation } from '@apollo/client';
 import { ADD_USER } from '../utils/mutations';
-// import AuthService from '../utils/auth';
+
 import AuthService from '../utils/auth';
 
 const SignupForm = () => {
@@ -16,6 +16,7 @@ const SignupForm = () => {
     email: '',
     password: '',
   });
+
   // call ADD_USER mutation
   const [addUser, { error, data }] = useMutation(ADD_USER);
 
@@ -34,9 +35,8 @@ const SignupForm = () => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    // console.log(userFormData);
     
-    // check if form has everything (as per react-bootstrap docs)
+    // check if form has been correctly filled in
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
@@ -48,17 +48,14 @@ const SignupForm = () => {
         variables: { ...userFormData },
       });
 
-      // if (!response.ok) {
-      //   throw new Error('something went wrong!');
-      // }
-      // const { token, user } = await response.json();
-
+      // Provide authentication token for newly created User
       AuthService.login(data.addUser.token);
     } catch (err) {
       console.error(err);
       setShowAlert(true);
     }
 
+    // Reset the form data when complete
     setUserFormData({
       username: '',
       email: '',

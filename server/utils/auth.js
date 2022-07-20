@@ -1,6 +1,7 @@
+// Import required dependencies
 const jwt = require('jsonwebtoken');
 
-// set token secret and expiration date
+// set token secret and expiration time
 const secret = 'mysecretsshhhhh';
 const expiration = '2h';
 
@@ -26,11 +27,10 @@ module.exports = {
     } catch {
       console.log('Invalid token');
     }
-    // send to next endpoint
-    // next();
     return req;
   },
 
+  // create token on login or signup
   signToken: function ({ username, email, _id }) {
     const payload = { username, email, _id };
 

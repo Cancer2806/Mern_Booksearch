@@ -1,4 +1,5 @@
-// use this to decode a token and get the user's information out of it
+// Functions for controlling User authentication
+// use this to decode a token and extract the user's information
 import decode from 'jwt-decode';
 
 // create a new class to instantiate for a user
@@ -8,14 +9,14 @@ class AuthService {
     return decode(this.getToken());
   }
 
-  // check if user's logged in
+  // check if User has logged in
   loggedIn() {
     // Checks if there is a saved token and it's still valid
     const token = this.getToken();
     return token && !this.isTokenExpired(token) ? true : false;
   }
 
-  // check if token is expired
+  // check if token has expired
   isTokenExpired(token) {
     try {
       const decoded = decode(token);
@@ -41,7 +42,7 @@ class AuthService {
   logout() {
     // Clear user token and profile data from localStorage
     localStorage.removeItem('id_token');
-    // this will reload the page and reset the state of the application
+    // Reload the page and reset the state of the application
     window.location.assign('/');
   }
 }

@@ -1,18 +1,14 @@
-// const { AuthenticationError } = require('apollo-server-express');
+// File containing the resolvers for GraphQl routing
+// Import required dependencies
 const User = require('../models/User');
-// const { signToken } = require('../utils/auth');
 const { signToken } = require('../utils/auth');
 
 // function to check if the user is logged in
 function checkLoggedIn(context) {
-  // console.log('context  ', context);
-  // console.log('context.user', context.user);
   const user = context.user;
   
   if (!user) {
-    // console.log('context  ', context);
-    // console.log('context.user', context.user);
-    throw new Error(`CK1:  User has not logged in`);
+    throw new Error(`User has not logged in`);
   };
   return user;
 };
@@ -24,7 +20,6 @@ const resolvers = {
     me: async (parent, args, context) => {
       const user = checkLoggedIn(context);
 
-      // const foundUser = await User.findOne({_id: context.user._id,});
       const foundUser = await User.findOne({ _id: user._id, });
       if (!foundUser) {
         throw new Error(`Cannot find User`);
@@ -34,6 +29,7 @@ const resolvers = {
   },
 
   Mutation: {
+    // resolver for logging in a User
     login: async (parent, { email, password }) => {
       const user = await User.findOne({ email: email });
       if (!user) {
@@ -50,6 +46,7 @@ const resolvers = {
       return { token, user };
     },
 
+    // resolver for adding a new User profile
     addUser: async (parent, { username, email, password }) => {
       const user = await User.create({ username, email, password });
       
@@ -58,12 +55,13 @@ const resolvers = {
       return { token, user };
     },
 
+    // resolver for saving a book to the saved books list
     saveBook: async (parent, { bookId, authors, title, description, image, link }, context) => {
       const user = checkLoggedIn(context);
-      // {_id: user._id},
+    
       try {
         const updatedUser = await User.findOneAndUpdate(
-          { _id: context.user._id },
+          { _id: user._id },
           { $addToSet: { savedBooks: { bookId, authors, title, description, image, link } } },
           { new: true }
         );
@@ -77,12 +75,12 @@ const resolvers = {
       };
     },
 
+    // resolver to remove a book from the saved books list
     removeBook: async (parent, { bookId }, context) => {
       const user = checkLoggedIn(context);
-      // const user = context.user;
-// {_id: user._id},      
+
       const updatedUser = await User.findOneAndUpdate(
-        { _id: context.user._id },
+        { _id: user._id },
         { $pull: { savedBooks: { bookId: bookId } } },
         { new: true }
       );

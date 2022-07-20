@@ -1,3 +1,4 @@
+// Use mongoose as the ODM.  Use bcrypt for hashing password
 const { Schema, model } = require('mongoose');
 const bcrypt = require('bcrypt');
 

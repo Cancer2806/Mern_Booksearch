@@ -1,16 +1,20 @@
+// define component for the login form
+// import the required dependencies
 import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
-
-// import { loginUser } from '../utils/API'; 
 
 // Import and use mutations
 import { useMutation } from '@apollo/client';
 import { LOGIN_USER } from '../utils/mutations';
+
 // import AuthService from '../utils/auth';
 import AuthService from '../utils/auth';
 
+// define and set state for User login form
 const LoginForm = (props) => {
   const [userFormData, setUserFormData] = useState({ email: '', password: '' });
+
+  // call the LOGIN_USER mutation
   const [login, { error, data }] = useMutation(LOGIN_USER);
 
   const [validated] = useState(false);
@@ -18,7 +22,7 @@ const LoginForm = (props) => {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    // console.log(userFormData);
+    
     setUserFormData({
       ...userFormData,
       [name]: value,
@@ -27,9 +31,8 @@ const LoginForm = (props) => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    // console.log(userFormData);
 
-    // check if form has everything
+    // check if valid data has been entered into the form
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
@@ -38,28 +41,18 @@ const LoginForm = (props) => {
 
     try {
       const { data } = await login({
-        // variables: {
-        //   email: userFormData.email,
-        //   password: userFormData.password
-        // },
         variables: { ...userFormData },
       });
-      // const response = await loginUser(userFormData);
-
-      // if (!response.ok) {
-      //   throw new Error('something went wrong!');
-      // }
-
-      // const { token, user } = await response.json();
-      // console.log(user);
+      
+      // get token for current session once login complete
       AuthService.login(data.login.token);
     } catch (err) {
       console.error(err);
       setShowAlert(true);
     }
 
+    // reset the login form
     setUserFormData({
-      // username: '',
       email: '',
       password: '',
     });

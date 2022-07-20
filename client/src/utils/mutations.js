@@ -1,3 +1,4 @@
+// Define frontend mutations to match backend mutation resolvers
 import { gql } from '@apollo/client';
 
 // LOGIN_USER will execute the loginUser mutation set up using Apollo Server.
